@@ -12,48 +12,27 @@ const runSequence = require('run-sequence');
 // const gzip = require('gulp-gzip');
 
 const paths = {
-    src: 'src/@(server|shared)/**/*.{js,jsx}',
-    dest: 'lib',
-    clientDest: 'static'
+    dest: 'dist'
 };
 
-gulp.task('clean-server', () => {
+gulp.task('clean', () => {
     return del(paths.dest);
 });
 
-gulp.task('clean-client', () => {
-    return del(paths.clientDest);
+gulp.task('clean-build', (cb) => {
+    runSequence('clean', 'build', cb);
 });
 
-gulp.task('clean-all', [ 'clean-server', 'clean-client' ]);
+gulp.task('build', ['build-renderer', 'build-main']);
 
-gulp.task('clean-build-all', (cb) => {
-    runSequence('clean-all', 'build-all', cb);
-});
-
-gulp.task('clean-build-client', (cb) => {
-    runSequence('clean-client', 'build-client', cb);
-});
-
-gulp.task('clean-build-server', (cb) => {
-    runSequence('clean-server', 'build-server', cb);
-});
-
-gulp.task('build-all', ['build-server', 'build-client']);
-
-// build server
-gulp.task('build-server', () => {
-    return gulp.src(paths.src)
-        .pipe(changed(paths.dest))
-        .pipe(sourcemaps.init())
-        .pipe(babel())
-        .pipe(sourcemaps.write('.'))
+gulp.task('build-renderer', () => {
+    return gulpWebpack(require('./webpack.renderer.config.js'), webpack)
         .pipe(gulp.dest(paths.dest));
 });
 
-gulp.task('build-client', () => {
-    return gulpWebpack(require('./webpack.config.js'), webpack)
-        .pipe(gulp.dest(paths.clientDest));
+gulp.task('build-main', () => {
+    return gulpWebpack(require('./webpack.main.config.js'), webpack)
+        .pipe(gulp.dest(paths.dest));
 });
 
 // Development mode. rebuild and restart server on file changed.

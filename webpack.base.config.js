@@ -7,16 +7,13 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 var config = {
-    entry: {
-        client: './src/client/boot'
-    },
     output: {
         // Make sure to use [name] or [id] in output.filename
         //  when using multiple entry points
-        path: path.join(__dirname, 'static'),
-        filename: "assets/entry.[name].[hash].js",
-        chunkFilename: "assets/dependency.[id].[chunkhash].js",
-        publicPath: '/',
+        path: path.join(__dirname, 'dist'),
+        filename: "assets/entry.[name].js",
+        chunkFilename: "assets/dependency.[id].js",
+        publicPath: '',
     },
     module: {
         loaders: [
@@ -36,13 +33,7 @@ var config = {
         }),
         new webpack.optimize.DedupePlugin(),
         // drop other locales from moment for size
-        new webpack.ContextReplacementPlugin(/moment\/locale$/, /en|es/),
-        new HtmlWebpackPlugin({
-            chunks: ['client'],
-            title: 'App',
-            filename: 'index.html'
-            //, template: 'src/client/index.html'
-        })
+        new webpack.ContextReplacementPlugin(/moment\/locale$/, /en|es/)
     ],
     resolve: {
         root: [path.join(__dirname, 'src/client')],
@@ -50,9 +41,6 @@ var config = {
         alias: {
             //none, at the moment.
         }
-    },
-    devServer: {
-        historyApiFallback: true
     }
 };
 

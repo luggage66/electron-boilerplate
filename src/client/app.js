@@ -6,8 +6,9 @@ import { Link } from './routing';
 
 import { pushHistoryState, getUrl, parseUrl, getRouteConfigFromName } from './routing';
 
-window.getUrl = getUrl;
-window.parseUrl = parseUrl;
+import { ipcRenderer } from 'electron';
+
+console.log(ipcRenderer);
 
 
 export default class App extends React.Component
