@@ -12,7 +12,17 @@ for (let route of routes) {
 }
 
 export function initializeRouter(listenCallback) {
-    history.listen(listenCallback);
+    history.listen((location, action) => {
+        let route = getRouteConfigFromName(location.state.route);
+        listenCallback({
+            location: {
+                path: location.pathname,
+                query: location.search
+            },
+            state: location.state.params,
+            route: route
+        });
+    });
 
     pushHistoryState(window.location.pathname + window.location.search, { replace: true });
 }
@@ -48,14 +58,15 @@ export class Link extends React.Component {
 
     handleClick(event) {
         event.preventDefault();
-        pushHistoryState(this.props);
+        let { route, params } = this.props;
+        pushHistoryState({ route, params });
     }
 
     render() {
         let { route, params, children, ...otherProps } = this.props;
         let url = getUrl(route, params);
 
-        return <a href={url} onClick={this.handleClick} {...otherProps}>{children}</a>;
+        return <a href={url} {...otherProps} onClick={this.handleClick}>{children}</a>;
     }
 }
 
