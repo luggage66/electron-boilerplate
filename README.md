@@ -1,7 +1,7 @@
-A minimal starter for an SPA (single page app) using the following technology:
+A __minimal__ starter for an Electron app using the following technology:
 
 * react - A popular view 'engine'.
-* webpack - A Javascript (and other files) bundler for turning a bunch of loose (but organized) JS files into a single file, ready for the browser.
+* webpack 2 - A Javascript (and other files) bundler for turning a bunch of loose (but organized) JS files into a single file, ready for the browser.
 * babel - A Javascript transpiler (use the latest JS on yesterday's web browser)
 * gulp - A task runner. Just a javascript alternative to a shell script, really.
 
