@@ -2,13 +2,12 @@
 const path = require('path');
 const fs = require('fs');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CompressionPlugin = require('compression-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // builds an object like { "sqlite3": "commonjs sqlite3", ... }
 // with each entry in node_modules
+// re-written but inspired by: http://jlongster.com/Backend-Apps-with-Webpack--Part-I
 const nodeModules =
     fs.readdirSync('node_modules')
     .filter(x => ['.bin'].indexOf(x) === -1)
@@ -16,6 +15,9 @@ const nodeModules =
     .reduce(Object.assign);
 
 var config = {
+    // The following are to be defined by derived configs
+    // - entry: {},
+    // - target: ''
     output: {
         path: path.join(__dirname, 'dist'),
         filename: "assets/entry.[name].js",
@@ -47,7 +49,6 @@ var config = {
         new webpack.ContextReplacementPlugin(/moment\/locale$/, /en|es/)
     ],
     resolve: {
-        // root: [path.join(__dirname, 'src/client')],
         extensions: ["", ".webpack.js", ".web.js", ".js", ".scss"],
         alias: {
             // force a single react version (a hack for some dep.. I forget which)
