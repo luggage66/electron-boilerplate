@@ -1,15 +1,22 @@
 /* globals __dirname, process, require, module */
 const path = require('path');
+const fs = require('fs');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
+// builds an object like { "sqlite3": "commonjs sqlite3", ... }
+// with each entry in node_modules
+const nodeModules =
+    fs.readdirSync('node_modules')
+    .filter(x => ['.bin'].indexOf(x) === -1)
+    .map(moduleName => ({ [moduleName]: `commonjs ${moduleName}` }))
+    .reduce(Object.assign);
+
 var config = {
     output: {
-        // Make sure to use [name] or [id] in output.filename
-        //  when using multiple entry points
         path: path.join(__dirname, 'dist'),
         filename: "assets/entry.[name].js",
         chunkFilename: "assets/dependency.[id].js",
@@ -25,6 +32,10 @@ var config = {
             { test: /\.json$/, loader: 'json' }
         ]
     },
+    node: {
+        __dirname: false,
+        __filename: false
+    },
     plugins: [
         // so react will build in 'production mode'
         // https://github.com/webpack/webpack/issues/868
@@ -36,13 +47,14 @@ var config = {
         new webpack.ContextReplacementPlugin(/moment\/locale$/, /en|es/)
     ],
     resolve: {
-        root: [path.join(__dirname, 'src/client')],
+        // root: [path.join(__dirname, 'src/client')],
         extensions: ["", ".webpack.js", ".web.js", ".js", ".scss"],
         alias: {
-            //none, at the moment.
+            // force a single react version (a hack for some dep.. I forget which)
             react: path.join(__dirname, 'node_modules/react')
         }
-    }
+    },
+    externals: nodeModules
 };
 
 if (NODE_ENV === 'production') {
@@ -50,14 +62,6 @@ if (NODE_ENV === 'production') {
         compress: {
             warnings: false
         }
-    }));
-
-    config.plugins.push(new CompressionPlugin({
-        asset: "[path].gz[query]",
-        algorithm: "gzip",
-        test: /\.js$|\.html$/,
-        threshold: 10240,
-        minRatio: 0.8
     }));
 }
 

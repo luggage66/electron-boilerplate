@@ -68,7 +68,7 @@
 
 	    // and load the index.html of the app.
 	    win.loadURL(_url2.default.format({
-	        pathname: '../index.html',
+	        pathname: _path2.default.join(__dirname, '../index.html'),
 	        protocol: 'file:',
 	        slashes: true
 	    }));
