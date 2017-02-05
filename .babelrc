@@ -1,6 +1,7 @@
 {
     "presets": [
         [ "env", {
+            "modules": false,
             "targets": {
                 "electron": 1.4
             }
