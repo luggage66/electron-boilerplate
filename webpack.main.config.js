@@ -1,12 +1,9 @@
-/* globals __dirname, process, require, module */
-const path = require('path');
+/* globals require, module */
 const webpack = require('webpack');
-const config = require('./webpack.base.config.js');
-
-const NODE_ENV = process.env.NODE_ENV || 'development';
+const baseConfig = require('./webpack.base.config.js');
 
 // config for electron main
-let mainConfig = Object.assign({}, config, {
+let mainConfig = Object.assign({}, baseConfig, {
     entry: {
         main: './src/main/index'
     },
